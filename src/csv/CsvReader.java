@@ -1,5 +1,8 @@
 package csv;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 public class CsvReader {
 	private String delimiter;
 	private String csvInputFilePath;
@@ -15,3 +18,11 @@ public class CsvReader {
 		
 	}
 }
+
+/*
+Files.walk(Paths.get("c:/users/born/Desktop")).forEach(filePath -> {
+if ( Files.isRegularFile(filePath) || Files.isDirectory(filePath) ) {
+	System.out.println(filePath);
+}
+});
+*/

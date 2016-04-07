@@ -24,7 +24,40 @@ public class EloImportSet {
 			br = new BufferedReader(new FileReader(input));
 			String tmp = br.readLine();
 			if (tmp != null && tmp.length() == EloImportDefaultSettings.lengthIdPadded) {
-				//this.hexIdRecordFolder = Inte
+				// this.hexIdRecordFolder = Inte
+			} else if (tmp.length() != EloImportDefaultSettings.lengthIdPadded) {
+				throw new InvalidInputException();
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			return;
+		} catch (InvalidInputException e) {
+			e.printStackTrace();
+			return;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return;
+		} finally {
+			try {
+				br.close();
+				System.out.println("finally");
+			} catch (IOException e) {
+				e.printStackTrace();
+				return;
+			}
+		}
+	}
+
+	// Copying the constant repeating part of each ELO record based on the first
+	// record
+	void getRecordHeader() {
+		BufferedReader br = null;
+		String input = EloImportDefaultSettings.pathToRecordIds;
+		try {
+			br = new BufferedReader(new FileReader(input));
+			String tmp = br.readLine();
+			if (tmp != null && tmp.length() == EloImportDefaultSettings.lengthIdPadded) {
+				// this.hexIdRecordFolder = Inte
 			} else if (tmp.length() != EloImportDefaultSettings.lengthIdPadded) {
 				throw new InvalidInputException();
 			}
@@ -51,15 +84,12 @@ public class EloImportSet {
 
 /*
  * package hextest;
-
-public class HexTest {
-		
-	public static void main (String[] args){
-		String firstHexRecord = "0000fffffffff";
-		long decNum = Long.decode("0x" + firstHexRecord);
-		System.out.println(decNum);
-		System.out.println(String.format("%08x",decNum));
-		
-	}
-}
- * */
+ * 
+ * public class HexTest {
+ * 
+ * public static void main (String[] args){ String firstHexRecord =
+ * "0000fffffffff"; long decNum = Long.decode("0x" + firstHexRecord);
+ * System.out.println(decNum); System.out.println(String.format("%08x",decNum));
+ * 
+ * } }
+ */

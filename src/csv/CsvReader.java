@@ -6,23 +6,20 @@ import java.nio.file.Paths;
 public class CsvReader {
 	private String delimiter;
 	private String csvInputFilePath;
-	
-	CsvReader(){
+
+	CsvReader() {
 		this.delimiter = CsvImportDefaultSettings.delimiter;
 		this.csvInputFilePath = CsvImportDefaultSettings.csvInputFilePath;
 	}
-	
-	
-	//test
-	public static void readCsvToCollection(){
-		
+
+	// test
+	public static void readCsvToCollection() {
+
 	}
 }
 
 /*
-Files.walk(Paths.get("c:/users/born/Desktop")).forEach(filePath -> {
-if ( Files.isRegularFile(filePath) || Files.isDirectory(filePath) ) {
-	System.out.println(filePath);
-}
-});
-*/
+ * Files.walk(Paths.get("c:/users/born/Desktop")).forEach(filePath ->{ if (
+ * Files.isRegularFile(filePath) || Files.isDirectory(filePath) ) {
+ * System.out.println(filePath); } });
+ */

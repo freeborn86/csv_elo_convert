@@ -8,8 +8,14 @@ import java.io.IOException;
 import elo.exceptions.InvalidInputException;
 
 public class EloConverter {
+
+	//Each  time the conversion is run it copies the source export Directory to another instance   
+	String pathToCopiedExport;
+	
+	
+
 	// The identifier of the folder storing the records to be imported
-	int hexIdRecordFolder;
+	int hexIdRootRecord;
 
 	// The last existing record in the folder
 	int hexIdLastRecord;

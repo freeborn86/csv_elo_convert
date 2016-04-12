@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 public class CsvReader {
 	private String delimiter;
 	private String csvInputFilePath;
+	private 
 
 	CsvReader() {
 		this.delimiter = CsvImportDefaultSettings.delimiter;

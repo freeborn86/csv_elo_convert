@@ -7,7 +7,7 @@ import java.io.IOException;
 
 import elo.exceptions.InvalidInputException;
 
-public class EloImportSet {
+public class EloConverter {
 	// The identifier of the folder storing the records to be imported
 	int hexIdRecordFolder;
 
@@ -17,7 +17,7 @@ public class EloImportSet {
 	// The quasi constant repeating part of each record
 	String recordHeader;
 
-	void getIndices() {
+	void getIndicesOld() {
 		BufferedReader br = null;
 		String input = EloImportDefaultSettings.pathToRecordIds;
 		try {
@@ -81,6 +81,14 @@ public class EloImportSet {
 		}
 	}
 }
+
+/*
+ * Files.walk(Paths.get("c:/users/born/Desktop")).forEach(filePath ->{ if (
+ * Files.isRegularFile(filePath) || Files.isDirectory(filePath) ) {
+ * System.out.println(filePath); } });
+ */
+
+
 
 /*
  * package hextest;

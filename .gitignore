@@ -1,2 +1,5 @@
 /bin/
 /target/
+/csv_input/
+/elo_export/
+/elo_generated/

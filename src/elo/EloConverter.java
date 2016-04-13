@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import elo.exceptions.InvalidInputException;
@@ -23,6 +24,9 @@ public class EloConverter {
 
 	// The identifier of the folder storing the records to be imported
 	private Long hexIdRootRecord;
+
+	// this collection stores
+	private ArrayList<MetaDataField> metaDataFields;
 
 	// The last existing record in the folder
 	private Long hexIdLastRecord;
@@ -79,27 +83,51 @@ public class EloConverter {
 		getExportMetaData();
 	}
 
-	//This function HAS A SIDEEFFECT, IT IS SETTING legnthIdPadded (this should be changed or the function name)
+	// This function HAS A SIDEEFFECT, IT IS SETTING legnthIdPadded (this should
+	// be changed or the function name)
 	private Long getExportMetaData() throws IOException {
 		Files.walk(Paths.get(this.currentDestinationDirectory)).forEach(filePath -> {
+			
+			//Iterating through ExpInfo.ini
 			if (Files.isRegularFile(filePath) && filePath.endsWith("ExpInfo.ini")) {
-				//debug
+				// debug - showing the ExpInfo.ini file path
 				System.out.println(filePath.toString());
 				BufferedReader br = null;
 				try {
 					br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath.toString()), "UTF-16"));
 
 					String line = null;
+					boolean rootRecordobtained = false;
+					boolean mask1Enctountered = false;
+					metaDataFields = new ArrayList<MetaDataField>();
 					while ((line = br.readLine()) != null) {
-						if (line.equals("[ENTRIES]")){
+						if (line.equals("[ENTRIES]") && !rootRecordobtained) {
 							String rootRecordLine = br.readLine();
 							String rootRecord = rootRecordLine.substring(0, rootRecordLine.indexOf('='));
 							this.lengthIdPadded = rootRecord.length();
 							hexIdRootRecord = Long.decode("0x" + rootRecord);
-							System.out.println("Root hex Id: "+String.format("%0" +  this.lengthIdPadded + "x",hexIdRootRecord));
-							break;
+							rootRecordobtained = true;
+							System.out.println(
+									"Root hex Id: " + String.format("%0" + this.lengthIdPadded + "x", hexIdRootRecord));
 						}
-
+						
+						//Gathering metadata elements into the metadata list
+						//this condition could be refined by a more specific regex for more "security"
+						if (line.equals("[MASK1]"))
+							mask1Enctountered = true;
+						
+						if (line.startsWith("MaskLine") && (mask1Enctountered == true) ){
+							String[] iniMetaData = line.split(",");
+							String keyNumProc = iniMetaData[0];
+							keyNumProc.replace("MaskLine", "");
+							System.out.println(keyNumProc);
+							//keyNumProc.replace(keyNumProc.substring(keyNumProc.indexOf("="), keyNumProc.length()), "");
+							//metaDataFields.add(new MetaDataField(iniMetaData[5], "", Integer.parseInt(keyNumProc), iniMetaData[6], iniMetaData[8]));
+							//System.out.print(iniMetaData[5] + " ");
+							//System.out.print(iniMetaData[6] + " ");
+							//System.out.print(iniMetaData[8] + "\n");
+							//System.out.println(metaDataFields.get(metaDataFields.size()).toString());
+						}
 					}
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();

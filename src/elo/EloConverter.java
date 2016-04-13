@@ -1,9 +1,12 @@
 package elo;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -16,13 +19,14 @@ public class EloConverter {
 	private int lengthIdPadded;
 	private String eloSourceExportPath;
 	private String eloGeneratedExportPath;
+	private String currentDestinationDirectory;
 
 	// The identifier of the folder storing the records to be imported
 	private Long hexIdRootRecord;
 
 	// The last existing record in the folder
 	private Long hexIdLastRecord;
-	
+
 	// The quasi constant repeating part of each record
 	private String recordHeader;
 
@@ -47,9 +51,9 @@ public class EloConverter {
 	// nice2have : destination folder could involve the source of import csv
 	// file
 	private String createDestinationDirectory(String path) throws IOException {
-		String timeStamp = new SimpleDateFormat("yyyy.MM.dd_HH.mm.ss").format(new Date());
+		String timeStamp = new SimpleDateFormat("yyyy.MM.dd_HH.mm.ss_SSS").format(new Date());
 		String destinationDirectory = Files.createDirectory(Paths.get(path + "\\" + timeStamp + "_convert")).toString();
-		// currentDestinationDirectory = destinationDirectory;
+		this.currentDestinationDirectory = destinationDirectory;
 		return destinationDirectory;
 	}
 
@@ -71,28 +75,62 @@ public class EloConverter {
 		;
 	}
 
-	private void readEloStaticParts() {
-		getRootRecord();
+	private void readEloStaticParts() throws IOException {
+		getExportMetaData();
 	}
-	
-	private Long getRootRecord(){
-		
+
+	//This function HAS A SIDEEFFECT, IT IS SETTING legnthIdPadded (this should be changed or the function name)
+	private Long getExportMetaData() throws IOException {
+		Files.walk(Paths.get(this.currentDestinationDirectory)).forEach(filePath -> {
+			if (Files.isRegularFile(filePath) && filePath.endsWith("ExpInfo.ini")) {
+				//debug
+				System.out.println(filePath.toString());
+				BufferedReader br = null;
+				try {
+					br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath.toString()), "UTF-16"));
+
+					String line = null;
+					while ((line = br.readLine()) != null) {
+						if (line.equals("[ENTRIES]")){
+							String rootRecordLine = br.readLine();
+							String rootRecord = rootRecordLine.substring(0, rootRecordLine.indexOf('='));
+							this.lengthIdPadded = rootRecord.length();
+							hexIdRootRecord = Long.decode("0x" + rootRecord);
+							System.out.println("Root hex Id: "+String.format("%0" +  this.lengthIdPadded + "x",hexIdRootRecord));
+							break;
+						}
+
+					}
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+					return;
+				} catch (IOException e) {
+					e.printStackTrace();
+					return;
+				} finally {
+					try {
+						br.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+						return;
+					}
+				}
+			}
+		});
 		return null;
 	}
-	
-	private Long getLastrecord(){
+
+	private Long getLastrecord() {
 		return null;
 	}
-	
-	private String getAclString(){
+
+	private String getAclString() {
 		return null;
 	}
-	
-	private Integer getNumberOfSubItems(){
+
+	private Integer getNumberOfSubItems() {
 		return null;
 	}
-	
-	
 
 	void getIndicesOld() {
 		BufferedReader br = null;
@@ -173,6 +211,5 @@ public class EloConverter {
  * public static void main (String[] args){ String firstHexRecord =
  * "0000fffffffff"; long decNum = Long.decode("0x" + firstHexRecord);
  * System.out.println(decNum); System.out.println(String.format("%08x",decNum));
- * 
  * } }
  */

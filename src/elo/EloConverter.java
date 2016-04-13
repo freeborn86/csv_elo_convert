@@ -13,23 +13,55 @@ import elo.exceptions.InvalidInputException;
 
 public class EloConverter {
 
+	private int lengthIdPadded;
+	private String eloSourceExportPath;
+	private String eloGeneratedExportPath;
+
+	// The identifier of the folder storing the records to be imported
+	private Long hexIdRootRecord;
+
+	// The last existing record in the folder
+	private Long hexIdLastRecord;
+	
+	// The quasi constant repeating part of each record
+	private String recordHeader;
+
+	public EloConverter(int lengthIdPadded, String eloSourceExportPath, String eloGeneratedExportPath) {
+		this.lengthIdPadded = lengthIdPadded;
+		this.eloSourceExportPath = eloSourceExportPath;
+		this.eloGeneratedExportPath = eloGeneratedExportPath;
+	}
+
+	public EloConverter() {
+		this(DefaultConversionSettings.lengthIdPadded, DefaultConversionSettings.eloSourceExportPath,
+				DefaultConversionSettings.eloGeneratedExportPath);
+	}
+
+	public void convert() throws IOException {
+		copyEloExport(this.eloSourceExportPath, createDestinationDirectory(this.eloGeneratedExportPath));
+		readEloStaticParts();
+	}
+
 	// Each time the conversion is run it copies the source export Directory to
 	// another destination instance with a timestamp
-	
-	//nice2have : destination folder could involve the source of import csv file
-	public static String createDestinationDirectory(String dst) throws IOException{
+	// nice2have : destination folder could involve the source of import csv
+	// file
+	private String createDestinationDirectory(String path) throws IOException {
 		String timeStamp = new SimpleDateFormat("yyyy.MM.dd_HH.mm.ss").format(new Date());
-		return Files.createDirectory(Paths.get(dst + "\\" + timeStamp + "_convert")).toString();
+		String destinationDirectory = Files.createDirectory(Paths.get(path + "\\" + timeStamp + "_convert")).toString();
+		// currentDestinationDirectory = destinationDirectory;
+		return destinationDirectory;
 	}
-	
-	public static void copyEloExport(String src, String dst) {
+
+	private void copyEloExport(String src, String dst) {
 		try {
 			Files.walk(Paths.get(src)).forEach(path -> {
 				try {
 					Files.copy(path, Paths.get(path.toString().replace(src, dst)));
 				} catch (Exception e) {
-					// commented this Exception printing, since exceptions are being thrown :(
-					//e.printStackTrace();
+					// commented this Exception printing, since exceptions are
+					// being thrown :(
+					// e.printStackTrace();
 				}
 			});
 		} catch (IOException e1) {
@@ -39,24 +71,38 @@ public class EloConverter {
 		;
 	}
 
-	// The identifier of the folder storing the records to be imported
-	int hexIdRootRecord;
-
-	// The last existing record in the folder
-	int hexIdLastRecord;
-
-	// The quasi constant repeating part of each record
-	String recordHeader;
+	private void readEloStaticParts() {
+		getRootRecord();
+	}
+	
+	private Long getRootRecord(){
+		
+		return null;
+	}
+	
+	private Long getLastrecord(){
+		return null;
+	}
+	
+	private String getAclString(){
+		return null;
+	}
+	
+	private Integer getNumberOfSubItems(){
+		return null;
+	}
+	
+	
 
 	void getIndicesOld() {
 		BufferedReader br = null;
-		String input = ConversionSettings.eloSourceExportPath;
+		String input = this.eloSourceExportPath;
 		try {
 			br = new BufferedReader(new FileReader(input));
 			String tmp = br.readLine();
-			if (tmp != null && tmp.length() == ConversionSettings.lengthIdPadded) {
+			if (tmp != null && tmp.length() == this.lengthIdPadded) {
 				// this.hexIdRecordFolder = Inte
-			} else if (tmp.length() != ConversionSettings.lengthIdPadded) {
+			} else if (tmp.length() != this.lengthIdPadded) {
 				throw new InvalidInputException();
 			}
 		} catch (FileNotFoundException e) {
@@ -83,13 +129,13 @@ public class EloConverter {
 	// record
 	void getRecordHeader() {
 		BufferedReader br = null;
-		String input = ConversionSettings.eloSourceExportPath;
+		String input = this.eloSourceExportPath;
 		try {
 			br = new BufferedReader(new FileReader(input));
 			String tmp = br.readLine();
-			if (tmp != null && tmp.length() == ConversionSettings.lengthIdPadded) {
+			if (tmp != null && tmp.length() == this.lengthIdPadded) {
 				// this.hexIdRecordFolder = Inte
-			} else if (tmp.length() != ConversionSettings.lengthIdPadded) {
+			} else if (tmp.length() != this.lengthIdPadded) {
 				throw new InvalidInputException();
 			}
 		} catch (FileNotFoundException e) {

@@ -119,14 +119,10 @@ public class EloConverter {
 						if (line.startsWith("MaskLine") && (mask1Enctountered == true) ){
 							String[] iniMetaData = line.split(",");
 							String keyNumProc = iniMetaData[0];
-							keyNumProc.replace("MaskLine", "");
-							System.out.println(keyNumProc);
-							//keyNumProc.replace(keyNumProc.substring(keyNumProc.indexOf("="), keyNumProc.length()), "");
-							//metaDataFields.add(new MetaDataField(iniMetaData[5], "", Integer.parseInt(keyNumProc), iniMetaData[6], iniMetaData[8]));
-							//System.out.print(iniMetaData[5] + " ");
-							//System.out.print(iniMetaData[6] + " ");
-							//System.out.print(iniMetaData[8] + "\n");
-							//System.out.println(metaDataFields.get(metaDataFields.size()).toString());
+							keyNumProc = keyNumProc.replace("MaskLine", "");
+							keyNumProc = keyNumProc.replace(keyNumProc.substring(keyNumProc.indexOf("="), keyNumProc.length()), "");
+							metaDataFields.add(new MetaDataField(iniMetaData[5], "", Integer.parseInt(keyNumProc)+1, iniMetaData[6], iniMetaData[8]));
+							System.out.println(metaDataFields.get(metaDataFields.size()-1).toString());
 						}
 					}
 				} catch (FileNotFoundException e) {

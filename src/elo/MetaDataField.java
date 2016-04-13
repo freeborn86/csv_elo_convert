@@ -20,6 +20,6 @@ public class MetaDataField {
 	}
 	
 	public String toString(){
-		return this.name + " " + this.text + " " +  this.keynum + "" +  this.keykey + "" + this.acl;
+		return this.name + " " + this.text + " " +  this.keynum + "" +  this.keykey + " " + this.acl;
 	}
 }

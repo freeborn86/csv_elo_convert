@@ -4,15 +4,40 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import elo.exceptions.InvalidInputException;
 
 public class EloConverter {
 
-	//Each  time the conversion is run it copies the source export Directory to another instance   
-	String pathToCopiedExport;
+	// Each time the conversion is run it copies the source export Directory to
+	// another destination instance with a timestamp
 	
+	//nice2have : destination folder could involve the source of import csv file
+	public static String createDestinationDirectory(String dst) throws IOException{
+		String timeStamp = new SimpleDateFormat("yyyy.MM.dd_HH.mm.ss").format(new Date());
+		return Files.createDirectory(Paths.get(dst + "\\" + timeStamp + "_convert")).toString();
+	}
 	
+	public static void copyEloExport(String src, String dst) {
+		try {
+			Files.walk(Paths.get(src)).forEach(path -> {
+				try {
+					Files.copy(path, Paths.get(path.toString().replace(src, dst)));
+				} catch (Exception e) {
+					// commented this Exception printing, since exceptions are being thrown :(
+					//e.printStackTrace();
+				}
+			});
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		;
+	}
 
 	// The identifier of the folder storing the records to be imported
 	int hexIdRootRecord;
@@ -25,13 +50,13 @@ public class EloConverter {
 
 	void getIndicesOld() {
 		BufferedReader br = null;
-		String input = EloImportDefaultSettings.pathToRecordIds;
+		String input = ConversionSettings.eloSourceExportPath;
 		try {
 			br = new BufferedReader(new FileReader(input));
 			String tmp = br.readLine();
-			if (tmp != null && tmp.length() == EloImportDefaultSettings.lengthIdPadded) {
+			if (tmp != null && tmp.length() == ConversionSettings.lengthIdPadded) {
 				// this.hexIdRecordFolder = Inte
-			} else if (tmp.length() != EloImportDefaultSettings.lengthIdPadded) {
+			} else if (tmp.length() != ConversionSettings.lengthIdPadded) {
 				throw new InvalidInputException();
 			}
 		} catch (FileNotFoundException e) {
@@ -58,13 +83,13 @@ public class EloConverter {
 	// record
 	void getRecordHeader() {
 		BufferedReader br = null;
-		String input = EloImportDefaultSettings.pathToRecordIds;
+		String input = ConversionSettings.eloSourceExportPath;
 		try {
 			br = new BufferedReader(new FileReader(input));
 			String tmp = br.readLine();
-			if (tmp != null && tmp.length() == EloImportDefaultSettings.lengthIdPadded) {
+			if (tmp != null && tmp.length() == ConversionSettings.lengthIdPadded) {
 				// this.hexIdRecordFolder = Inte
-			} else if (tmp.length() != EloImportDefaultSettings.lengthIdPadded) {
+			} else if (tmp.length() != ConversionSettings.lengthIdPadded) {
 				throw new InvalidInputException();
 			}
 		} catch (FileNotFoundException e) {
@@ -93,8 +118,6 @@ public class EloConverter {
  * Files.isRegularFile(filePath) || Files.isDirectory(filePath) ) {
  * System.out.println(filePath); } });
  */
-
-
 
 /*
  * package hextest;

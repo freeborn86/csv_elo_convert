@@ -1,15 +1,14 @@
 package app;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
+import elo.ConversionSettings;
 import elo.EloConverter;
 
 public class Main {
 
 	public static void main(String[] args) throws IOException {
-		// TODO Auto-generated method stub
+		String dst = EloConverter.createDestinationDirectory(ConversionSettings.eloGeneratedExportPath);
+		EloConverter.copyEloExport(ConversionSettings.eloSourceExportPath,dst);
 
 	}
 

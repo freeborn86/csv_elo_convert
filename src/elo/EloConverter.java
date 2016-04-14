@@ -22,32 +22,50 @@ public class EloConverter {
 	private String eloGeneratedExportPath;
 	private String currentDestinationDirectory;
 
-	// The identifier of the folder storing the records to be imported
+	// The below 2 fields are obtained by running getExportMetaData()
 	private Long hexIdRootRecord;
-
-	// this collection stores
 	private ArrayList<MetaDataField> metaDataFields;
 
 	// The last existing record in the folder
 	private Long hexIdLastRecord;
 
+	private int numberOfSubItems;
+
 	// The quasi constant repeating part of each record
 	private String recordHeader;
 
-	public EloConverter(int lengthIdPadded, String eloSourceExportPath, String eloGeneratedExportPath) {
-		this.lengthIdPadded = lengthIdPadded;
+	public EloConverter(String eloSourceExportPath, String eloGeneratedExportPath) {
 		this.eloSourceExportPath = eloSourceExportPath;
 		this.eloGeneratedExportPath = eloGeneratedExportPath;
+		
+		this.lengthIdPadded = -1;
+		this.currentDestinationDirectory = "n/a";
+		this.hexIdRootRecord = -1L;
+		this.numberOfSubItems = -1;
+		this.recordHeader = "n/a";
 	}
 
 	public EloConverter() {
-		this(DefaultConversionSettings.lengthIdPadded, DefaultConversionSettings.eloSourceExportPath,
-				DefaultConversionSettings.eloGeneratedExportPath);
+		this(DefaultConversionSettings.eloSourceExportPath, DefaultConversionSettings.eloGeneratedExportPath);
+	}
+
+	public String  toString(){
+		String ret = "";
+		ret += "Elo Converter state ifnromation:";
+		ret += "-------------------------------";
+		ret += "Length of records strings: " + this.lengthIdPadded;
+		ret += "Source Elo Export path: " + this.eloSourceExportPath;
+		ret += "Generated Elo Export path: " + this.eloGeneratedExportPath;
+		ret += "Current time stamped Export Directory: " + this.currentDestinationDirectory;
+		ret += "Hex ID of Root Record: " + this.hexIdRootRecord;
+		ret += "Number of Subitems: " + this.numberOfSubItems;
+		ret += "Current time stamped Export Directory: " + this.currentDestinationDirectory;
+		return ret;
 	}
 
 	public void convert() throws IOException {
 		copyEloExport(this.eloSourceExportPath, createDestinationDirectory(this.eloGeneratedExportPath));
-		readEloStaticParts();
+		readEloExportData();
 	}
 
 	// Each time the conversion is run it copies the source export Directory to
@@ -79,23 +97,24 @@ public class EloConverter {
 		;
 	}
 
-	private void readEloStaticParts() throws IOException {
+	private void readEloExportData() throws IOException {
 		getExportMetaData();
+		getRecordsInfoFromExport();
 	}
 
+	// improvecode
 	// This function HAS A SIDEEFFECT, IT IS SETTING legnthIdPadded (this should
-	// be changed or the function name)
-	private Long getExportMetaData() throws IOException {
+	// be changed or the function name
+	private void getExportMetaData() throws IOException {
 		Files.walk(Paths.get(this.currentDestinationDirectory)).forEach(filePath -> {
-			
-			//Iterating through ExpInfo.ini
+
+			// Iterating through ExpInfo.ini
 			if (Files.isRegularFile(filePath) && filePath.endsWith("ExpInfo.ini")) {
 				// debug - showing the ExpInfo.ini file path
-				System.out.println(filePath.toString());
+				// System.out.println(filePath.toString());
 				BufferedReader br = null;
 				try {
 					br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath.toString()), "UTF-16"));
-
 					String line = null;
 					boolean rootRecordobtained = false;
 					boolean mask1Enctountered = false;
@@ -107,22 +126,25 @@ public class EloConverter {
 							this.lengthIdPadded = rootRecord.length();
 							hexIdRootRecord = Long.decode("0x" + rootRecord);
 							rootRecordobtained = true;
-							System.out.println(
-									"Root hex Id: " + String.format("%0" + this.lengthIdPadded + "x", hexIdRootRecord));
 						}
-						
-						//Gathering metadata elements into the metadata list
-						//this condition could be refined by a more specific regex for more "security"
+
+						// Gathering meta data elements into the meta data list
+						// this condition could be refined by a more specific
+						// regex for more "security"
 						if (line.equals("[MASK1]"))
 							mask1Enctountered = true;
-						
-						if (line.startsWith("MaskLine") && (mask1Enctountered == true) ){
+
+						if (line.startsWith("MaskLine") && (mask1Enctountered == true)) {
 							String[] iniMetaData = line.split(",");
 							String keyNumProc = iniMetaData[0];
 							keyNumProc = keyNumProc.replace("MaskLine", "");
-							keyNumProc = keyNumProc.replace(keyNumProc.substring(keyNumProc.indexOf("="), keyNumProc.length()), "");
-							metaDataFields.add(new MetaDataField(iniMetaData[5], "", Integer.parseInt(keyNumProc)+1, iniMetaData[6], iniMetaData[8]));
-							System.out.println(metaDataFields.get(metaDataFields.size()-1).toString()+"\n");
+							keyNumProc = keyNumProc
+									.replace(keyNumProc.substring(keyNumProc.indexOf("="), keyNumProc.length()), "");
+							metaDataFields.add(new MetaDataField(iniMetaData[5], "", Integer.parseInt(keyNumProc) + 1,
+									iniMetaData[6], iniMetaData[8]));
+							// debug
+							// System.out.println(metaDataFields.get(metaDataFields.size()
+							// - 1).toString() + "\n");
 						}
 					}
 				} catch (FileNotFoundException e) {
@@ -141,11 +163,61 @@ public class EloConverter {
 				}
 			}
 		});
-		return null;
 	}
 
-	private Long getLastrecord() {
-		return null;
+	private Long getRecordsInfoFromExport() throws IOException {
+		Files.walk(Paths.get(this.currentDestinationDirectory)).forEach(filePath -> {
+			if (Files.isRegularFile(filePath) && filePath.endsWith(convertLongToHexString(hexIdRootRecord) + ".ESW")) {
+				BufferedReader br = null;
+				try {
+					br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath.toString()), "UTF-16"));
+					String line = null;
+					boolean subitemsReached = false;
+					numberOfSubItems = 0;
+					String lastLine = "";
+					while ((line = br.readLine()) != null) {
+						if (line.equals("[SUBITEMS]")) {
+							subitemsReached = true;
+						} else if (subitemsReached == true) {
+							// imporvecode some condition could be written here
+							// to assert format if the file does not end with
+							// records
+							// counting subitems also depends on the file ONLY
+							// containing suitems after [SUBITEMS] tag
+							lastLine += line;
+							numberOfSubItems++;
+						}
+					}
+					int startIndex = lastLine.indexOf('\"') + 1;
+					hexIdLastRecord = convertToLongNumber(lastLine.substring(startIndex, startIndex + lengthIdPadded));
+					// debug
+					// System.out.println(hexIdLastRecord);
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+					return;
+				} finally {
+					try {
+						br.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+						return;
+					}
+				}
+			}
+		});
+		return this.hexIdLastRecord;
+	}
+
+	// codeimprove this is procedural, and should be OOP style in JAVA
+	// Converts a long number to a lenght of hex string used by the elo export
+	private String convertLongToHexString(Long num) {
+		return String.format("%0" + this.lengthIdPadded + "x", num);
+	}
+
+	private Long convertToLongNumber(String hexString) {
+		return Long.decode("0x" + hexString);
 	}
 
 	private String getAclString() {
@@ -179,7 +251,6 @@ public class EloConverter {
 		} finally {
 			try {
 				br.close();
-				System.out.println("finally");
 			} catch (IOException e) {
 				e.printStackTrace();
 				return;

@@ -37,7 +37,7 @@ public class EloConverter {
 	public EloConverter(String eloSourceExportPath, String eloGeneratedExportPath) {
 		this.eloSourceExportPath = eloSourceExportPath;
 		this.eloGeneratedExportPath = eloGeneratedExportPath;
-		
+
 		this.lengthIdPadded = -1;
 		this.currentDestinationDirectory = "n/a";
 		this.hexIdRootRecord = -1L;
@@ -49,7 +49,7 @@ public class EloConverter {
 		this(DefaultConversionSettings.eloSourceExportPath, DefaultConversionSettings.eloGeneratedExportPath);
 	}
 
-	public String  toString(){
+	public String toString() {
 		String ret = "";
 		ret += "Elo Converter state ifnromation\n";
 		ret += "-------------------------------\n";
@@ -101,6 +101,7 @@ public class EloConverter {
 	private void readEloExportData() throws IOException {
 		getExportMetaData();
 		getRecordsInfoFromExport();
+		getRecordHeader();
 	}
 
 	// improvecode
@@ -168,7 +169,8 @@ public class EloConverter {
 
 	private Long getRecordsInfoFromExport() throws IOException {
 		Files.walk(Paths.get(this.currentDestinationDirectory)).forEach(filePath -> {
-			if (Files.isRegularFile(filePath) && filePath.endsWith(convertLongToHexString(hexIdRootRecord) + ".ESW")) {
+			if (Files.isRegularFile(filePath)
+					&& filePath.endsWith(convertLongToHexUpperString(hexIdRootRecord) + ".ESW")) {
 				BufferedReader br = null;
 				try {
 					br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath.toString()), "UTF-16"));
@@ -211,23 +213,52 @@ public class EloConverter {
 		return this.hexIdLastRecord;
 	}
 
+	// this function reads the last Elo recrod and stores the constant header in
+	// a String field of Eloconverter class
+	public void getRecordHeader() {
+		this.recordHeader = "";
+		BufferedReader br = null;
+		String currentLastRecordPath = this.currentDestinationDirectory + "\\" + convertLongToHexUpperString(this.hexIdRootRecord) + "\\"
+				+ convertLongToHexUpperString(this.hexIdLastRecord) + ".ESW";
+		try {
+			br = new BufferedReader(new InputStreamReader(new FileInputStream(currentLastRecordPath), "UTF-16"));
+			String line = null;
+			while ((line = br.readLine()) != null) {
+				this.recordHeader += line + "\n";
+				if (line.startsWith("MAPCOUNT=\"")) {
+					break;
+				}
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return;
+		} finally {
+			try {
+				br.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+				return;
+			}
+		}
+		return;
+	}
+
 	// codeimprove this is procedural, and should be OOP style in JAVA
 	// Converts a long number to a lenght of hex string used by the elo export
-	private String convertLongToHexString(Long num) {
-		return String.format("%0" + this.lengthIdPadded + "x", num);
+	private String convertLongToHexUpperString(Long num) {
+		return String.format("%0" + this.lengthIdPadded + "x", num).toUpperCase();
 	}
 
 	private Long convertToLongNumber(String hexString) {
 		return Long.decode("0x" + hexString);
 	}
 
-	private String getAclString() {
-		return null;
-	}
-
-	private Integer getNumberOfSubItems() {
-		return null;
-	}
+	// this function might not be used at all
+	/*
+	 * private String getAclString() { return null; }
+	 */
 
 	void getIndicesOld() {
 		BufferedReader br = null;
@@ -261,36 +292,19 @@ public class EloConverter {
 
 	// Copying the constant repeating part of each ELO record based on the first
 	// record
-	void getRecordHeader() {
-		BufferedReader br = null;
-		String input = this.eloSourceExportPath;
-		try {
-			br = new BufferedReader(new FileReader(input));
-			String tmp = br.readLine();
-			if (tmp != null && tmp.length() == this.lengthIdPadded) {
-				// this.hexIdRecordFolder = Inte
-			} else if (tmp.length() != this.lengthIdPadded) {
-				throw new InvalidInputException();
-			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			return;
-		} catch (InvalidInputException e) {
-			e.printStackTrace();
-			return;
-		} catch (IOException e) {
-			e.printStackTrace();
-			return;
-		} finally {
-			try {
-				br.close();
-				System.out.println("finally");
-			} catch (IOException e) {
-				e.printStackTrace();
-				return;
-			}
-		}
-	}
+	/*
+	 * void getRecordHeader() { BufferedReader br = null; String input =
+	 * this.eloSourceExportPath; try { br = new BufferedReader(new
+	 * FileReader(input)); String tmp = br.readLine(); if (tmp != null &&
+	 * tmp.length() == this.lengthIdPadded) { // this.hexIdRecordFolder = Inte }
+	 * else if (tmp.length() != this.lengthIdPadded) { throw new
+	 * InvalidInputException(); } } catch (FileNotFoundException e) {
+	 * e.printStackTrace(); return; } catch (InvalidInputException e) {
+	 * e.printStackTrace(); return; } catch (IOException e) {
+	 * e.printStackTrace(); return; } finally { try { br.close();
+	 * System.out.println("finally"); } catch (IOException e) {
+	 * e.printStackTrace(); return; } } }
+	 */
 }
 
 /*

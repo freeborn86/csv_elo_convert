@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -60,7 +59,13 @@ public class EloConverter {
 		ret += "\nHex ID of Root Record: " + this.hexIdRootRecord;
 		ret += "\nHex ID of Last Record: " + this.hexIdLastRecord;
 		ret += "\nNumber of Subitems: " + this.numberOfSubItems;
-		ret += "\n\nRecord header:\n " + this.recordHeader;
+		ret += "\n\nRecord header:\n" + this.recordHeader;
+		
+		ret += "\n\nMetaData Fields:\n";
+		ret += "-------------------------------\n";
+ 		for(MetaDataField m : metaDataFields){
+			ret+= m.toString();
+		}
 		return ret;
 	}
 
@@ -75,7 +80,7 @@ public class EloConverter {
 	// file
 	private String createDestinationDirectory(String path) throws IOException {
 		String timeStamp = new SimpleDateFormat("yyyy.MM.dd_HH.mm.ss_SSS").format(new Date());
-		String destinationDirectory = Files.createDirectory(Paths.get(path + "\\" + timeStamp + "_convert")).toString();
+		String destinationDirectory = Files.createDirectories(Paths.get(path + "\\" + timeStamp + "_convert")).toString();
 		this.currentDestinationDirectory = destinationDirectory;
 		return destinationDirectory;
 	}
@@ -246,7 +251,7 @@ public class EloConverter {
 	}
 
 	// codeimprove this is procedural, and should be OOP style in JAVA
-	// Converts a long number to a lenght of hex string used by the elo export
+	// Converts a long number to a hex string  of the length used by the elo export
 	private String convertLongToHexUpperString(Long num) {
 		return String.format("%0" + this.lengthIdPadded + "x", num).toUpperCase();
 	}

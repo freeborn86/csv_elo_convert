@@ -31,7 +31,7 @@ public class MetaDataField {
 		if (this.keykey != null && this.keykey != "")
 			ret += keykey + "\n";
 		if (this.acl != null && this.acl != "")
-			ret += this.acl;
+			ret += this.acl+ "\n";
 		
 		return ret;
 	}

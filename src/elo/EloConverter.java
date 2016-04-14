@@ -51,15 +51,16 @@ public class EloConverter {
 
 	public String  toString(){
 		String ret = "";
-		ret += "Elo Converter state ifnromation:";
-		ret += "-------------------------------";
+		ret += "Elo Converter state ifnromation\n";
+		ret += "-------------------------------\n";
 		ret += "Length of records strings: " + this.lengthIdPadded;
-		ret += "Source Elo Export path: " + this.eloSourceExportPath;
-		ret += "Generated Elo Export path: " + this.eloGeneratedExportPath;
-		ret += "Current time stamped Export Directory: " + this.currentDestinationDirectory;
-		ret += "Hex ID of Root Record: " + this.hexIdRootRecord;
-		ret += "Number of Subitems: " + this.numberOfSubItems;
-		ret += "Current time stamped Export Directory: " + this.currentDestinationDirectory;
+		ret += "\nSource Elo Export path: " + this.eloSourceExportPath;
+		ret += "\nGenerated Elo Export path: " + this.eloGeneratedExportPath;
+		ret += "\nCurrent time stamped Export Directory: " + this.currentDestinationDirectory;
+		ret += "\nHex ID of Root Record: " + this.hexIdRootRecord;
+		ret += "\nHex ID of Last Record: " + this.hexIdLastRecord;
+		ret += "\nNumber of Subitems: " + this.numberOfSubItems;
+		ret += "\n\nRecord header:\n " + this.recordHeader;
 		return ret;
 	}
 
@@ -184,7 +185,7 @@ public class EloConverter {
 							// records
 							// counting subitems also depends on the file ONLY
 							// containing suitems after [SUBITEMS] tag
-							lastLine += line;
+							lastLine = line;
 							numberOfSubItems++;
 						}
 					}

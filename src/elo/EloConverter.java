@@ -60,11 +60,11 @@ public class EloConverter {
 		ret += "\nHex ID of Last Record: " + this.hexIdLastRecord;
 		ret += "\nNumber of Subitems: " + this.numberOfSubItems;
 		ret += "\n\nRecord header:\n" + this.recordHeader;
-		
+
 		ret += "\n\nMetaData Fields:\n";
 		ret += "-------------------------------\n";
- 		for(MetaDataField m : metaDataFields){
-			ret+= m.toString();
+		for (MetaDataField m : metaDataFields) {
+			ret += m.toString();
 		}
 		return ret;
 	}
@@ -80,7 +80,8 @@ public class EloConverter {
 	// file
 	private String createDestinationDirectory(String path) throws IOException {
 		String timeStamp = new SimpleDateFormat("yyyy.MM.dd_HH.mm.ss_SSS").format(new Date());
-		String destinationDirectory = Files.createDirectories(Paths.get(path + "\\" + timeStamp + "_convert")).toString();
+		String destinationDirectory = Files.createDirectories(Paths.get(path + "\\" + timeStamp + "_convert"))
+				.toString();
 		this.currentDestinationDirectory = destinationDirectory;
 		return destinationDirectory;
 	}
@@ -223,7 +224,8 @@ public class EloConverter {
 	public void getRecordHeader() {
 		this.recordHeader = "";
 		BufferedReader br = null;
-		String currentLastRecordPath = this.currentDestinationDirectory + "\\" + convertLongToHexUpperString(this.hexIdRootRecord) + "\\"
+		String currentLastRecordPath = this.currentDestinationDirectory + "\\"
+				+ convertLongToHexUpperString(this.hexIdRootRecord) + "\\"
 				+ convertLongToHexUpperString(this.hexIdLastRecord) + ".ESW";
 		try {
 			br = new BufferedReader(new InputStreamReader(new FileInputStream(currentLastRecordPath), "UTF-16"));
@@ -251,7 +253,8 @@ public class EloConverter {
 	}
 
 	// codeimprove this is procedural, and should be OOP style in JAVA
-	// Converts a long number to a hex string  of the length used by the elo export
+	// Converts a long number to a hex string of the length used by the elo
+	// export
 	private String convertLongToHexUpperString(Long num) {
 		return String.format("%0" + this.lengthIdPadded + "x", num).toUpperCase();
 	}
@@ -294,37 +297,4 @@ public class EloConverter {
 			}
 		}
 	}
-
-	// Copying the constant repeating part of each ELO record based on the first
-	// record
-	/*
-	 * void getRecordHeader() { BufferedReader br = null; String input =
-	 * this.eloSourceExportPath; try { br = new BufferedReader(new
-	 * FileReader(input)); String tmp = br.readLine(); if (tmp != null &&
-	 * tmp.length() == this.lengthIdPadded) { // this.hexIdRecordFolder = Inte }
-	 * else if (tmp.length() != this.lengthIdPadded) { throw new
-	 * InvalidInputException(); } } catch (FileNotFoundException e) {
-	 * e.printStackTrace(); return; } catch (InvalidInputException e) {
-	 * e.printStackTrace(); return; } catch (IOException e) {
-	 * e.printStackTrace(); return; } finally { try { br.close();
-	 * System.out.println("finally"); } catch (IOException e) {
-	 * e.printStackTrace(); return; } } }
-	 */
 }
-
-/*
- * Files.walk(Paths.get("c:/users/born/Desktop")).forEach(filePath ->{ if (
- * Files.isRegularFile(filePath) || Files.isDirectory(filePath) ) {
- * System.out.println(filePath); } });
- */
-
-/*
- * package hextest;
- * 
- * public class HexTest {
- * 
- * public static void main (String[] args){ String firstHexRecord =
- * "0000fffffffff"; long decNum = Long.decode("0x" + firstHexRecord);
- * System.out.println(decNum); System.out.println(String.format("%08x",decNum));
- * } }
- */

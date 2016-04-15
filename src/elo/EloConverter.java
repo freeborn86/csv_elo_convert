@@ -265,20 +265,41 @@ public class EloConverter {
 		return;
 	}
 
-	private void generateEloExport(CsvReader cr) {
+	private void generateEloExport(CsvReader cr) throws IOException {
 		generateIndices(generateRecords(cr));
 	}
 
-	private void generateIndices(int numOfIndices) {
-		// TODO opeing filewriter
+	private void generateIndices(int numOfIndices) throws IOException {
+		// TODO opening file writer
+		//
+		// Generating the filename
+		String recordFilename = this.currentDestinationDirectory + "\\"
+				+ convertLongToHexUpperString(this.hexIdRootRecord) + ".ESW";
 
-		// writing the amount of line required
-		for (int i = 0; i < numOfIndices; i++) {
-			// TODO writing the line
+		// Creating the Output stream writer and writing the file
+		OutputStreamWriter indexWriter = null;
+		try {
+			indexWriter = new OutputStreamWriter(new FileOutputStream(recordFilename), "UTF-16");
+			// writing the amount of line required
+			for (int i = 0; i < numOfIndices; i++) {
+				String toWrite = "";
+				indexWriter.write(toWrite);
+			}
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				indexWriter.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
+
 	}
 
-	private int generateRecords(CsvReader cr) {
+	private int generateRecords(CsvReader cr) throws IOException {
 		readClientData(cr);
 		int numOfRecrodsGenerated = 0;
 		for (ArrayList<String> clientRecord : this.clientData) {
@@ -288,7 +309,7 @@ public class EloConverter {
 		return numOfRecrodsGenerated;
 	}
 
-	private String generateRecordFile(ArrayList<String> clientRecord) {
+	private String generateRecordFile(ArrayList<String> clientRecord) throws IOException {
 		// TODO generating the output file here
 
 		// Setting the ID for the upcoming record to be generated
@@ -306,6 +327,8 @@ public class EloConverter {
 		OutputStreamWriter recordWriter = null;
 		try {
 			recordWriter = new OutputStreamWriter(new FileOutputStream(recordFilename), "UTF-16");
+			//Writing into the file
+			recordWriter.write(this.recordHeader);
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
@@ -313,7 +336,6 @@ public class EloConverter {
 		} finally {
 			try {
 				recordWriter.close();
-				return recordFilename;
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

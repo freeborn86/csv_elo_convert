@@ -35,7 +35,7 @@ public class EloConverter {
 	// The last existing record in the folder
 	private Long hexIdLastRecord;
 
-	private int numberOfSubItems;
+	private Integer numberOfSubItems;
 
 	// The quasi constant repeating part of each record
 	private String recordHeader;
@@ -201,11 +201,11 @@ public class EloConverter {
 						if (line.equals("[SUBITEMS]")) {
 							subitemsReached = true;
 						} else if (subitemsReached == true) {
-							// imporvecode some condition could be written here
+							// improve code some condition could be written here
 							// to assert format if the file does not end with
 							// records
-							// counting subitems also depends on the file ONLY
-							// containing suitems after [SUBITEMS] tag
+							// counting sub items also depends on the file ONLY
+							// containing sub items after [SUBITEMS] tag
 							lastLine = line;
 							numberOfSubItems++;
 						}
@@ -281,8 +281,9 @@ public class EloConverter {
 		try {
 			indexWriter = new OutputStreamWriter(new FileOutputStream(recordFilename), "UTF-16");
 			// writing the amount of line required
-			for (int i = 0; i < numOfIndices; i++) {
-				String toWrite = "";
+			for (Integer i = 0; i < numOfIndices; i++) {
+				String toWrite = String.valueOf(this.numberOfSubItems + i - 1) + "=\""
+						+ convertLongToHexUpperString(Long.valueOf(this.hexIdLastRecord + 1 + i)) + "\"\r\n";
 				indexWriter.write(toWrite);
 			}
 		} catch (UnsupportedEncodingException e) {
@@ -314,7 +315,7 @@ public class EloConverter {
 
 		// Setting the ID for the upcoming record to be generated
 		if (this.hexIdUpComigRecord == -1L) {
-			this.hexIdLastRecord = this.hexIdLastRecord + 1;
+			this.hexIdUpComigRecord = this.hexIdLastRecord + 1;
 		} else {
 			this.hexIdUpComigRecord++;
 		}
@@ -327,7 +328,7 @@ public class EloConverter {
 		OutputStreamWriter recordWriter = null;
 		try {
 			recordWriter = new OutputStreamWriter(new FileOutputStream(recordFilename), "UTF-16");
-			//Writing into the file
+			// Writing into the file
 			recordWriter.write(this.recordHeader);
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
@@ -340,6 +341,8 @@ public class EloConverter {
 				e.printStackTrace();
 			}
 		}
+		// debug
+		System.out.println("generated a recordfile");
 		return recordFilename;
 	}
 
@@ -362,34 +365,4 @@ public class EloConverter {
 	/*
 	 * private String getAclString() { return null; }
 	 */
-
-	void getIndicesOld() {
-		BufferedReader br = null;
-		String input = this.eloSourceExportPath;
-		try {
-			br = new BufferedReader(new FileReader(input));
-			String tmp = br.readLine();
-			if (tmp != null && tmp.length() == this.lengthIdPadded) {
-				// this.hexIdRecordFolder = Inte
-			} else if (tmp.length() != this.lengthIdPadded) {
-				throw new InvalidInputException();
-			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			return;
-		} catch (InvalidInputException e) {
-			e.printStackTrace();
-			return;
-		} catch (IOException e) {
-			e.printStackTrace();
-			return;
-		} finally {
-			try {
-				br.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-				return;
-			}
-		}
-	}
 }

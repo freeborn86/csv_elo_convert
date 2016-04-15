@@ -12,7 +12,7 @@ public class Main {
 		EloConverter e = new EloConverter();
 		e.convert(cr);
 		cr.printClientData();
-		System.out.println(e.toString());
+		//System.out.println(e.toString());
 
 	}
 

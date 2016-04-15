@@ -11,7 +11,7 @@ public class CsvReader {
 	private String delimiter;
 	private String csvInputFilePath;
 
-	public ArrayList<ArrayList<String>> clientData;
+	private ArrayList<ArrayList<String>> clientData;
 
 	public CsvReader() {
 		this.delimiter = CsvImportDefaultSettings.delimiter;

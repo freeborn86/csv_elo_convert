@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import csv.CsvReader;
 import elo.exceptions.InvalidInputException;
 
 public class EloConverter {
@@ -24,6 +25,7 @@ public class EloConverter {
 	// The below 2 fields are obtained by running getExportMetaData()
 	private Long hexIdRootRecord;
 	private ArrayList<MetaDataField> metaDataFields;
+	private ArrayList<ArrayList<String>> clientData;
 
 	// The last existing record in the folder
 	private Long hexIdLastRecord;
@@ -36,12 +38,14 @@ public class EloConverter {
 	public EloConverter(String eloSourceExportPath, String eloGeneratedExportPath) {
 		this.eloSourceExportPath = eloSourceExportPath;
 		this.eloGeneratedExportPath = eloGeneratedExportPath;
-
+		
+		//invalid initial values signaling being not initialized yet
 		this.lengthIdPadded = -1;
 		this.currentDestinationDirectory = "n/a";
 		this.hexIdRootRecord = -1L;
 		this.numberOfSubItems = -1;
 		this.recordHeader = "n/a";
+		this.clientData = new ArrayList<ArrayList<String>>();
 	}
 
 	public EloConverter() {
@@ -65,6 +69,8 @@ public class EloConverter {
 		ret += "-------------------------------\n";
 		for (MetaDataField m : metaDataFields) {
 			ret += m.toString();
+			
+		//TODO : listing clientData
 		}
 		return ret;
 	}
@@ -264,7 +270,17 @@ public class EloConverter {
 	}
 	
 	private void generateRecords(){
-		
+		for (ArrayList<String> clientRecord : this.clientData){
+			
+		}
+	}
+	
+	private void generateRecord(ArrayList<String> clientData){
+		//TODO generating the output file here
+	}
+	
+	private void readClientData(CsvReader cr){
+		this.clientData = cr.readCsvToCollection();
 	}
 
 	// codeimprove this is procedural, and should be OOP style in JAVA

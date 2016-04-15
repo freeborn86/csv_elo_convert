@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -14,9 +13,9 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 
 import csv.CsvReader;
-import elo.exceptions.InvalidInputException;
 
 public class EloConverter {
 
@@ -353,10 +352,22 @@ public class EloConverter {
 
 		// Creating the Output stream writer and writing the file
 		OutputStreamWriter recordWriter = null;
+		String toWrite = "";
+		//Adding the header
+		toWrite += this.recordHeader;
+		Iterator<String> i = clientRecord.iterator();
+		for (MetaDataField mdf : metaDataFields){
+			if (i.hasNext()){
+				toWrite += mdf.toString(i.next());
+			}
+			else{
+				mdf.toString();
+			}
+		}
 		try {
 			recordWriter = new OutputStreamWriter(new FileOutputStream(recordFilename), "UTF-16");
 			// Writing into the file
-			recordWriter.write(this.recordHeader);
+			recordWriter.write(toWrite);
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {

@@ -27,9 +27,9 @@ public class MetaDataField {
 		if (this.name != null && this.name != "")
 			ret += this.name + "\n";
 		if (currentText != null && currentText != "")
-			ret += currentText + "\n";
+			ret ="KEYTEXT=\"" + currentText + "\n";
 		if (this.keykey != null && this.keykey != "")
-			ret += keykey + "\n";
+			ret +="KEYKEY=\"" + keykey + "\n";
 		if (this.acl != null && this.acl != "")
 			ret += this.acl+ "\n";
 		

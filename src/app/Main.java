@@ -7,14 +7,12 @@ import elo.EloConverter;
 
 public class Main {
 
-	public static void main(String[] args) throws IOException {		
+	public static void main(String[] args) throws IOException {
 		CsvReader cr = new CsvReader();
 		EloConverter e = new EloConverter();
 		e.convert(cr);
-		//debug
-		//cr.printClientData();
-		//System.out.println(e.toString());
-
+		// debug
+		// cr.printClientData();
+		// System.out.println(e.toString());
 	}
-
 }

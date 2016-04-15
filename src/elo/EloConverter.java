@@ -75,10 +75,10 @@ public class EloConverter {
 		return ret;
 	}
 
-	public void convert() throws IOException {
+	public void convert(CsvReader cr) throws IOException {
 		copyEloExport(this.eloSourceExportPath, createDestinationDirectory(this.eloGeneratedExportPath));
 		readEloExportData();
-		generateEloExport();
+		generateEloExport(cr);
 	}
 
 	// Each time the conversion is run it copies the source export Directory to
@@ -259,9 +259,9 @@ public class EloConverter {
 		return;
 	}
 	
-	private void generateEloExport(){
+	private void generateEloExport(CsvReader cr){
 		generateIndices();
-		generateRecords();
+		generateRecords(cr);
 		
 	}
 	
@@ -269,7 +269,8 @@ public class EloConverter {
 		
 	}
 	
-	private void generateRecords(){
+	private void generateRecords(CsvReader cr){
+		readClientData(cr);
 		for (ArrayList<String> clientRecord : this.clientData){
 			
 		}

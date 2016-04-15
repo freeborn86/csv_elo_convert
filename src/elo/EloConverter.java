@@ -356,12 +356,15 @@ public class EloConverter {
 		//Adding the header
 		toWrite += this.recordHeader;
 		Iterator<String> i = clientRecord.iterator();
+		int keynum = 1;
 		for (MetaDataField mdf : metaDataFields){
 			if (i.hasNext()){
-				toWrite += mdf.toString(i.next());
+				toWrite += mdf.toString(i.next(), keynum);
+				keynum++;
 			}
 			else{
-				mdf.toString();
+				toWrite += mdf.toString("", keynum);
+				keynum++;
 			}
 		}
 		try {

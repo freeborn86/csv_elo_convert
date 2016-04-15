@@ -19,11 +19,29 @@ public class MetaDataField {
 		this("", "", key, "", "");
 	}
 
+	//TODO fix this calss, separate what belongs to constructor and toString
 	public String toString(String currentText) {
 
 		String ret = "";
 		if (this.keynum != null && this.keynum != "")
 			ret += this.keynum + "\n";
+		if (this.name != null && this.name != "")
+			ret += this.name + "\n";
+		if (currentText != null && currentText != "")
+			ret ="KEYTEXT=\"" + currentText + "\n";
+		if (this.keykey != null && this.keykey != "")
+			ret +="KEYKEY=\"" + keykey + "\n";
+		if (this.acl != null && this.acl != "")
+			ret += this.acl+ "\n";
+		
+		return ret;
+	}
+	
+	public String toString(String currentText, int keynum) {
+
+		String ret = "";
+		if (keynum !=-1 )
+			ret += keynum + "\n";
 		if (this.name != null && this.name != "")
 			ret += this.name + "\n";
 		if (currentText != null && currentText != "")

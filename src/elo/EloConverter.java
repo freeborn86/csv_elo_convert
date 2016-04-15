@@ -74,8 +74,6 @@ public class EloConverter {
 		ret += "-------------------------------\n";
 		for (MetaDataField m : metaDataFields) {
 			ret += m.toString();
-
-			// TODO : listing clientData
 		}
 		return ret;
 	}
@@ -110,7 +108,6 @@ public class EloConverter {
 				}
 			});
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		;
@@ -337,7 +334,7 @@ public class EloConverter {
 	}
 
 	private String generateRecordFile(ArrayList<String> clientRecord) throws IOException {
-		// TODO generating the output file here
+		
 
 		// Setting the ID for the upcoming record to be generated
 		if (this.hexIdUpComigRecord == -1L) {
@@ -358,6 +355,11 @@ public class EloConverter {
 		Iterator<String> i = clientRecord.iterator();
 		int keynum = 1;
 		for (MetaDataField mdf : metaDataFields) {
+			// TODO GET GENERTED METADATA LIMIT FROM RECORDS!
+			//TODO GET METADATA FROM LAST RECORD
+			if (keynum > 30){
+				break;
+			}
 			if (i.hasNext()) {
 				mdf.setText(i.next());
 				toWrite += mdf.toString(keynum);

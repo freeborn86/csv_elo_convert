@@ -3,9 +3,12 @@ package elo;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -25,7 +28,7 @@ public class EloConverter {
 	// The below 2 fields are obtained by running getExportMetaData()
 	private Long hexIdRootRecord;
 	private ArrayList<MetaDataField> metaDataFields;
-	
+
 	private Long hexIdUpComigRecord;
 	private ArrayList<ArrayList<String>> clientData;
 
@@ -267,11 +270,11 @@ public class EloConverter {
 	}
 
 	private void generateIndices(int numOfIndices) {
-		//TODO opeing filewriter
-		
-		//writing the amount of line required
-		for (int i = 0; i < numOfIndices; i++){
-			//TODO writing the line
+		// TODO opeing filewriter
+
+		// writing the amount of line required
+		for (int i = 0; i < numOfIndices; i++) {
+			// TODO writing the line
 		}
 	}
 
@@ -280,21 +283,42 @@ public class EloConverter {
 		int numOfRecrodsGenerated = 0;
 		for (ArrayList<String> clientRecord : this.clientData) {
 			generateRecordFile(clientRecord);
-			numOfRecrodsGenerated ++;
+			numOfRecrodsGenerated++;
 		}
 		return numOfRecrodsGenerated;
 	}
 
-	private void generateRecordFile(ArrayList<String> clientRecord) {
+	private String generateRecordFile(ArrayList<String> clientRecord) {
 		// TODO generating the output file here
-		
-		//Settig the ID for the upcoming record to be generated
-		if (this.hexIdUpComigRecord == -1L){
+
+		// Setting the ID for the upcoming record to be generated
+		if (this.hexIdUpComigRecord == -1L) {
 			this.hexIdLastRecord = this.hexIdLastRecord + 1;
+		} else {
+			this.hexIdUpComigRecord++;
 		}
-		else{
-			this.hexIdUpComigRecord ++;
+		// Generating the filename
+		String recordFilename = this.currentDestinationDirectory + "\\"
+				+ convertLongToHexUpperString(this.hexIdRootRecord) + "\\"
+				+ convertLongToHexUpperString(hexIdUpComigRecord) + ".ESW";
+
+		// Creating the Output stream writer and writing the file
+		OutputStreamWriter recordWriter = null;
+		try {
+			recordWriter = new OutputStreamWriter(new FileOutputStream(recordFilename), "UTF-16");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				recordWriter.close();
+				return recordFilename;
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
+		return recordFilename;
 	}
 
 	private void readClientData(CsvReader cr) {

@@ -72,6 +72,7 @@ public class EloConverter {
 	public void convert() throws IOException {
 		copyEloExport(this.eloSourceExportPath, createDestinationDirectory(this.eloGeneratedExportPath));
 		readEloExportData();
+		generateEloExport();
 	}
 
 	// Each time the conversion is run it copies the source export Directory to
@@ -250,6 +251,20 @@ public class EloConverter {
 			}
 		}
 		return;
+	}
+	
+	private void generateEloExport(){
+		generateIndices();
+		generateRecords();
+		
+	}
+	
+	private void generateIndices(){
+		
+	}
+	
+	private void generateRecords(){
+		
 	}
 
 	// codeimprove this is procedural, and should be OOP style in JAVA

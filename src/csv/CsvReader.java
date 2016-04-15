@@ -19,7 +19,7 @@ public class CsvReader {
 	}
 
 	// test
-	public void readCsvToCollection() {
+	public ArrayList<ArrayList<String>> readCsvToCollection() {
 		clientData = new ArrayList<ArrayList<String>>();
 		BufferedReader br = null;
 		try {
@@ -35,18 +35,19 @@ public class CsvReader {
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
+			return null;
 		} catch (IOException e) {
 			e.printStackTrace();
-			return;
+			return null;
 		} finally {
 			try {
 				br.close();
 			} catch (IOException e) {
 				e.printStackTrace();
-				return;
+				return clientData;
 			}
 		}
-		return;
+		return clientData;
 	}
 
 	public void printClientData() {

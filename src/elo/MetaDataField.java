@@ -30,15 +30,15 @@ public class MetaDataField {
 
 		String ret = "";
 		if (this.keynum != null && this.keynum != "")
-			ret += this.keynum + "\n";
+			ret += this.keynum + "\r\n";
 		if (this.name != null && this.name != "")
-			ret += "KEYNAME=\"" + this.name + "\"\n";
+			ret += "KEYNAME=\"" + this.name + "\"\r\n";
 		// if (currentText != null && currentText != "")
-		ret += "KEYTEXT=\"" + currentText + "\"\n";
+		ret += "KEYTEXT=\"" + currentText + "\"\r\n";
 		if (this.keykey != null && this.keykey != "")
-			ret += "KEYKEY=\"" + keykey + "\"\n";
+			ret += "KEYKEY=\"" + keykey + "\"\r\n";
 		if (this.acl != null && this.acl != "")
-			ret += this.acl + "\n";
+			ret += this.acl + "\r\n";
 
 		return ret;
 	}
@@ -47,15 +47,15 @@ public class MetaDataField {
 
 		String ret = "";
 		if (keynum != -1)
-			ret += "[KEY" + keynum + "]\n";
+			ret += "[KEY" + keynum + "]\r\n";
 		if (this.name != null && this.name != "")
-			ret += "KEYNAME=\"" + this.name + "\"\n";
+			ret += "KEYNAME=\"" + this.name + "\"\r\n";
 		// if (currentText != null && currentText != "")
-		ret += "KEYTEXT=\"" + currentText + "\"\n";
+		ret += "KEYTEXT=\"" + currentText + "\"\r\n";
 		if (this.keykey != null && this.keykey != "")
-			ret += "KEYKEY=\"" + keykey + "\"\n";
+			ret += "KEYKEY=\"" + keykey + "\"\r\n";
 		if (this.acl != null && this.acl != "")
-			ret += this.acl + "\n";
+			ret += this.acl + "\r\n";
 
 		return ret;
 	}
@@ -63,15 +63,15 @@ public class MetaDataField {
 	public String toString(int keynum) {
 		String ret = "";
 		if (keynum != -1)
-			ret +=  "[KEY" + keynum + "]\n";
+			ret +=  "[KEY" + keynum + "]\r\n";
 		if (this.name != null && this.name != "")
-			ret += "KEYNAME=\"" + this.name + "\"\n";
+			ret += "KEYNAME=\"" + this.name + "\"\r\n";
 		// if (currentText != null && currentText != "")
-		ret += "KEYTEXT=\"" + this.text + "\"\n";
+		ret += "KEYTEXT=\"" + this.text + "\"\r\n";
 		if (this.keykey != null && this.keykey != "")
-			ret += "KEYKEY=\"" + keykey + "\"\n";
+			ret += "KEYKEY=\"" + keykey + "\"\r\n";
 		if (this.acl != null && this.acl != "")
-			ret += this.acl + "\n";
+			ret += this.acl + "\r\n";
 
 		return ret;
 	}

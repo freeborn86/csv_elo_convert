@@ -278,7 +278,7 @@ public class EloConverter {
 		// Copying the original content of the file before overwriting it (yeah
 		// this is not nice but BOM screws me over)
 		String originalContent = "";
-		String toWrite ="";
+		String toWrite = "";
 		BufferedReader br = null;
 		try {
 			br = new BufferedReader(new InputStreamReader(new FileInputStream(recordFilename), "UTF-16"));
@@ -298,7 +298,7 @@ public class EloConverter {
 			}
 		}
 		// end of copy
-		//Adding the originalContent to the temp string
+		// Adding the originalContent to the temp string
 		toWrite += originalContent;
 
 		// Creating the Output stream writer and writing the file
@@ -353,17 +353,16 @@ public class EloConverter {
 		// Creating the Output stream writer and writing the file
 		OutputStreamWriter recordWriter = null;
 		String toWrite = "";
-		//Adding the header
+		// Adding the header
 		toWrite += this.recordHeader;
 		Iterator<String> i = clientRecord.iterator();
 		int keynum = 1;
-		for (MetaDataField mdf : metaDataFields){
-			if (i.hasNext()){
+		for (MetaDataField mdf : metaDataFields) {
+			if (i.hasNext()) {
 				mdf.setText(i.next());
 				toWrite += mdf.toString(keynum);
 				keynum++;
-			}
-			else{
+			} else {
 				toWrite += mdf.toString("", keynum);
 				keynum++;
 			}
@@ -401,8 +400,4 @@ public class EloConverter {
 		return Long.decode("0x" + hexString);
 	}
 
-	// this function might not be used at all
-	/*
-	 * private String getAclString() { return null; }
-	 */
 }

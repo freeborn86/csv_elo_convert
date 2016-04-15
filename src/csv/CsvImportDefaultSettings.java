@@ -11,7 +11,7 @@ import java.nio.file.Paths;
 public class CsvImportDefaultSettings {
 
 	static {
-		final String csvFolderPath = "csv_input";
+		final String csvFolderPath = "csv";
 		final String delimiterConfigFile = "delimiter.txt";
 
 		try {

@@ -359,7 +359,8 @@ public class EloConverter {
 		int keynum = 1;
 		for (MetaDataField mdf : metaDataFields){
 			if (i.hasNext()){
-				toWrite += mdf.toString(i.next(), keynum);
+				mdf.setText(i.next());
+				toWrite += mdf.toString(keynum);
 				keynum++;
 			}
 			else{

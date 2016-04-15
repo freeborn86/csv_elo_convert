@@ -13,7 +13,7 @@ public class Main {
 		e.convert(cr);
 		//debug
 		//cr.printClientData();
-		//System.out.println(e.toString());
+		System.out.println(e.toString());
 
 	}
 

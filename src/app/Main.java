@@ -11,7 +11,8 @@ public class Main {
 		CsvReader cr = new CsvReader();
 		EloConverter e = new EloConverter();
 		e.convert(cr);
-		cr.printClientData();
+		//debug
+		//cr.printClientData();
 		//System.out.println(e.toString());
 
 	}

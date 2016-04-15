@@ -244,7 +244,7 @@ public class EloConverter {
 			br = new BufferedReader(new InputStreamReader(new FileInputStream(currentLastRecordPath), "UTF-16"));
 			String line = null;
 			while ((line = br.readLine()) != null) {
-				this.recordHeader += line + "\n";
+				this.recordHeader += line + "\n\r";
 				if (line.startsWith("MAPCOUNT=\"")) {
 					break;
 				}
@@ -270,22 +270,49 @@ public class EloConverter {
 	}
 
 	private void generateIndices(int numOfIndices) throws IOException {
-		// TODO opening file writer
+
 		//
 		// Generating the filename
 		String recordFilename = this.currentDestinationDirectory + "\\"
 				+ convertLongToHexUpperString(this.hexIdRootRecord) + ".ESW";
 
+		// Copying the original content of the file before overwriting it (yeah
+		// this is not nice but BOM screws me over)
+		String originalContent = "";
+		String toWrite ="";
+		BufferedReader br = null;
+		try {
+			br = new BufferedReader(new InputStreamReader(new FileInputStream(recordFilename), "UTF-16"));
+			String line = null;
+			while ((line = br.readLine()) != null) {
+				originalContent += line + "\n\r";
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				br.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		// end of copy
+		//Adding the originalContent to the temp string
+		toWrite += originalContent;
+
 		// Creating the Output stream writer and writing the file
+		// TODO use string builder here?
 		OutputStreamWriter indexWriter = null;
 		try {
 			indexWriter = new OutputStreamWriter(new FileOutputStream(recordFilename), "UTF-16");
 			// writing the amount of line required
 			for (Integer i = 0; i < numOfIndices; i++) {
-				String toWrite = String.valueOf(this.numberOfSubItems + i - 1) + "=\""
+				toWrite += String.valueOf(this.numberOfSubItems + i) + "=\""
 						+ convertLongToHexUpperString(Long.valueOf(this.hexIdLastRecord + 1 + i)) + "\"\r\n";
-				indexWriter.write(toWrite);
 			}
+			indexWriter.write(toWrite);
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
@@ -341,8 +368,6 @@ public class EloConverter {
 				e.printStackTrace();
 			}
 		}
-		// debug
-		System.out.println("generated a recordfile");
 		return recordFilename;
 	}
 

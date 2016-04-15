@@ -18,7 +18,6 @@ public class CsvReader {
 		this.csvInputFilePath = CsvImportDefaultSettings.folderPath + "\\" + CsvImportDefaultSettings.csvInputFile;
 	}
 
-	// test
 	public ArrayList<ArrayList<String>> readCsvToCollection() {
 		clientData = new ArrayList<ArrayList<String>>();
 		BufferedReader br = null;

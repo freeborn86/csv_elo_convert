@@ -243,7 +243,7 @@ public class EloConverter {
 			br = new BufferedReader(new InputStreamReader(new FileInputStream(currentLastRecordPath), "UTF-16"));
 			String line = null;
 			while ((line = br.readLine()) != null) {
-				this.recordHeader += line + "\n\r";
+				this.recordHeader += line + "\r\n";
 				if (line.startsWith("MAPCOUNT=\"")) {
 					break;
 				}
@@ -284,7 +284,7 @@ public class EloConverter {
 			br = new BufferedReader(new InputStreamReader(new FileInputStream(recordFilename), "UTF-16"));
 			String line = null;
 			while ((line = br.readLine()) != null) {
-				originalContent += line + "\n\r";
+				originalContent += line + "\r\n";
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

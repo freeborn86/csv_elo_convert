@@ -25,6 +25,8 @@ public class EloConverter {
 	// The below 2 fields are obtained by running getExportMetaData()
 	private Long hexIdRootRecord;
 	private ArrayList<MetaDataField> metaDataFields;
+	
+	private Long hexIdUpComigRecord;
 	private ArrayList<ArrayList<String>> clientData;
 
 	// The last existing record in the folder
@@ -38,13 +40,14 @@ public class EloConverter {
 	public EloConverter(String eloSourceExportPath, String eloGeneratedExportPath) {
 		this.eloSourceExportPath = eloSourceExportPath;
 		this.eloGeneratedExportPath = eloGeneratedExportPath;
-		
-		//invalid initial values signaling being not initialized yet
+
+		// invalid initial values signaling being not initialized yet
 		this.lengthIdPadded = -1;
 		this.currentDestinationDirectory = "n/a";
 		this.hexIdRootRecord = -1L;
 		this.numberOfSubItems = -1;
 		this.recordHeader = "n/a";
+		this.hexIdUpComigRecord = -1L;
 		this.clientData = new ArrayList<ArrayList<String>>();
 	}
 
@@ -69,8 +72,8 @@ public class EloConverter {
 		ret += "-------------------------------\n";
 		for (MetaDataField m : metaDataFields) {
 			ret += m.toString();
-			
-		//TODO : listing clientData
+
+			// TODO : listing clientData
 		}
 		return ret;
 	}
@@ -258,29 +261,43 @@ public class EloConverter {
 		}
 		return;
 	}
-	
-	private void generateEloExport(CsvReader cr){
-		generateIndices();
-		generateRecords(cr);
-		
+
+	private void generateEloExport(CsvReader cr) {
+		generateIndices(generateRecords(cr));
 	}
-	
-	private void generateIndices(){
+
+	private void generateIndices(int numOfIndices) {
+		//TODO opeing filewriter
 		
-	}
-	
-	private void generateRecords(CsvReader cr){
-		readClientData(cr);
-		for (ArrayList<String> clientRecord : this.clientData){
-			
+		//writing the amount of line required
+		for (int i = 0; i < numOfIndices; i++){
+			//TODO writing the line
 		}
 	}
-	
-	private void generateRecord(ArrayList<String> clientData){
-		//TODO generating the output file here
+
+	private int generateRecords(CsvReader cr) {
+		readClientData(cr);
+		int numOfRecrodsGenerated = 0;
+		for (ArrayList<String> clientRecord : this.clientData) {
+			generateRecordFile(clientRecord);
+			numOfRecrodsGenerated ++;
+		}
+		return numOfRecrodsGenerated;
 	}
-	
-	private void readClientData(CsvReader cr){
+
+	private void generateRecordFile(ArrayList<String> clientRecord) {
+		// TODO generating the output file here
+		
+		//Settig the ID for the upcoming record to be generated
+		if (this.hexIdUpComigRecord == -1L){
+			this.hexIdLastRecord = this.hexIdLastRecord + 1;
+		}
+		else{
+			this.hexIdUpComigRecord ++;
+		}
+	}
+
+	private void readClientData(CsvReader cr) {
 		this.clientData = cr.readCsvToCollection();
 	}
 

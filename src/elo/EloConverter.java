@@ -131,7 +131,7 @@ public class EloConverter {
 				// System.out.println(filePath.toString());
 				BufferedReader br = null;
 				try {
-					br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath.toString()), "UTF-16"));
+					br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath.toString()), "UTF-16LE"));
 					String line = null;
 					boolean rootRecordobtained = false;
 					boolean mask1Enctountered = false;
@@ -188,7 +188,7 @@ public class EloConverter {
 					&& filePath.endsWith(convertLongToHexUpperString(hexIdRootRecord) + ".ESW")) {
 				BufferedReader br = null;
 				try {
-					br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath.toString()), "UTF-16"));
+					br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath.toString()), "UTF-16LE"));
 					String line = null;
 					boolean subitemsReached = false;
 					numberOfSubItems = 0;
@@ -237,7 +237,7 @@ public class EloConverter {
 				+ convertLongToHexUpperString(this.hexIdRootRecord) + "\\"
 				+ convertLongToHexUpperString(this.hexIdLastRecord) + ".ESW";
 		try {
-			br = new BufferedReader(new InputStreamReader(new FileInputStream(currentLastRecordPath), "UTF-16"));
+			br = new BufferedReader(new InputStreamReader(new FileInputStream(currentLastRecordPath), "UTF-16LE"));
 			String line = null;
 			while ((line = br.readLine()) != null) {
 				this.recordHeader += line + "\r\n";
@@ -278,7 +278,7 @@ public class EloConverter {
 		String toWrite = "";
 		BufferedReader br = null;
 		try {
-			br = new BufferedReader(new InputStreamReader(new FileInputStream(recordFilename), "UTF-16"));
+			br = new BufferedReader(new InputStreamReader(new FileInputStream(recordFilename), "UTF-16LE"));
 			String line = null;
 			while ((line = br.readLine()) != null) {
 				originalContent += line + "\r\n";
@@ -302,7 +302,7 @@ public class EloConverter {
 		// TODO use string builder here?
 		OutputStreamWriter indexWriter = null;
 		try {
-			indexWriter = new OutputStreamWriter(new FileOutputStream(recordFilename), "UTF-16");
+			indexWriter = new OutputStreamWriter(new FileOutputStream(recordFilename), "UTF-16LE");
 			// writing the amount of line required
 			for (Integer i = 0; i < numOfIndices; i++) {
 				toWrite += String.valueOf(this.numberOfSubItems + i) + "=\""
@@ -376,7 +376,7 @@ public class EloConverter {
 			}
 		}
 		try {
-			recordWriter = new OutputStreamWriter(new FileOutputStream(recordFilename), "UTF-16");
+			recordWriter = new OutputStreamWriter(new FileOutputStream(recordFilename), "UTF-16LE");
 			// Writing into the file
 			recordWriter.write(toWrite);
 		} catch (UnsupportedEncodingException e) {

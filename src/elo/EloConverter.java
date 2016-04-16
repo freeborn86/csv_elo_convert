@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -39,6 +40,7 @@ public class EloConverter {
 
 	// The quasi constant repeating part of each record
 	private String recordHeader;
+	private int numOfRecrodsGenerated;
 
 	public EloConverter() throws IOException {
 		EloConversionDefaultSettings est = new EloConversionDefaultSettings();
@@ -241,10 +243,20 @@ public class EloConverter {
 			br = new BufferedReader(new InputStreamReader(new FileInputStream(currentLastRecordPath), "UnicodeLittle"));
 			String line = null;
 			while ((line = br.readLine()) != null) {
-				this.recordHeader += line + "\r\n";
-				if (line.startsWith("MAPCOUNT=\"")) {
-					break;
+				if (line.startsWith("SHORTDESC=\"")) {
+					line = "SHORTDESC=\"";
+					this.recordHeader += line + "\r\n";
+					// debug
+					// System.out.println(line);
 				}
+
+				else if (line.startsWith("MAPCOUNT=\"")) {
+					this.recordHeader += line + "\r\n";
+					break;
+				} else {
+					this.recordHeader += line + "\r\n";
+				}
+
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -326,7 +338,7 @@ public class EloConverter {
 
 	private int generateRecords(CsvReader cr) throws IOException {
 		readClientData(cr);
-		int numOfRecrodsGenerated = 0;
+		this.numOfRecrodsGenerated = 0;
 		for (ArrayList<String> clientRecord : this.clientData) {
 			generateRecordFile(clientRecord);
 			numOfRecrodsGenerated++;
@@ -369,10 +381,38 @@ public class EloConverter {
 				}
 			}
 			if (i.hasNext()) {
-				mdf.setText(i.next());
+				String currAtt = i.next();
+				// Setting shortdesc when at the first attribute
+				if (keynum == 1) {
+					// BufferedReader br = new BufferedReader(new
+					// StringReader(toWrite));
+					// String line = null;
+					// while ((line = br.readLine()) != null) {
+					// if (line.startsWith("SHORTDESC=\"")) {
+					// System.
+					// line += currAtt + "\"";
+					// }
+					// }
+					toWrite = toWrite.replace("SHORTDESC=\"", "SHORTDESC=\"" + currAtt + "\"");
+				}
+				mdf.setText(currAtt);
 				toWrite += mdf.toString(keynum);
 				keynum++;
 			} else {
+				// Setting shortdesc when at the first attribute
+				if (keynum == 1) {
+					//Buffered Reader
+					// BufferedReader br = new BufferedReader(new
+					// StringReader(toWrite));
+					// String line = null;
+					// while ((line = br.readLine()) != null) {
+					// if (line.startsWith("SHORTDESC=\"")) {
+					// line += "Import" + String.format("%05d",
+					// this.numOfRecrodsGenerated) + "\"";
+					// }
+					// }
+					toWrite = toWrite.replace("SHORTDESC=\"", "SHORTDESC=\"Import " + numOfRecrodsGenerated + "\"");
+				}
 				toWrite += mdf.toString("", keynum);
 				keynum++;
 			}

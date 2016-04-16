@@ -333,6 +333,7 @@ public class EloConverter {
 		return numOfRecrodsGenerated;
 	}
 
+	@SuppressWarnings("unused")
 	private String generateRecordFile(ArrayList<String> clientRecord) throws IOException {
 		
 

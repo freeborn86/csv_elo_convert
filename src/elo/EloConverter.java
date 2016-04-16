@@ -15,11 +15,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 
+import csv.CsvImportDefaultSettings;
 import csv.CsvReader;
 
 public class EloConverter {
-
+	
 	private int lengthIdPadded;
+	private int metadataLimit;
 	private String eloSourceExportPath;
 	private String eloGeneratedExportPath;
 	private String currentDestinationDirectory;
@@ -39,9 +41,11 @@ public class EloConverter {
 	// The quasi constant repeating part of each record
 	private String recordHeader;
 
-	public EloConverter(String eloSourceExportPath, String eloGeneratedExportPath) {
-		this.eloSourceExportPath = eloSourceExportPath;
-		this.eloGeneratedExportPath = eloGeneratedExportPath;
+	public EloConverter() throws IOException {
+		EloConversionDefaultSettings est = new EloConversionDefaultSettings();
+		this.eloSourceExportPath = est.eloSourceExportPath;
+		this.eloGeneratedExportPath = est.eloGeneratedExportPath;
+		this.metadataLimit = est.metadataLimit;
 
 		// invalid initial values signaling being not initialized yet
 		this.lengthIdPadded = -1;
@@ -53,9 +57,6 @@ public class EloConverter {
 		this.clientData = new ArrayList<ArrayList<String>>();
 	}
 
-	public EloConverter() {
-		this(DefaultConversionSettings.eloSourceExportPath, DefaultConversionSettings.eloGeneratedExportPath);
-	}
 
 	public String toString() {
 		String ret = "";
@@ -333,7 +334,6 @@ public class EloConverter {
 		return numOfRecrodsGenerated;
 	}
 
-	@SuppressWarnings("unused")
 	private String generateRecordFile(ArrayList<String> clientRecord) throws IOException {
 		
 
@@ -364,8 +364,8 @@ public class EloConverter {
 			//TODO GET METADATA FROM LAST RECORD?
 			// TODO GET GENERTED METADATA LIMIT FROM RECORDS instead of static number?
 			// current solution: replacing double quotes with singles in names
-			if (DefaultConversionSettings.metadataLimit > 0){
-				if (keynum > DefaultConversionSettings.metadataLimit){
+			if (this.metadataLimit > 0){
+				if (keynum > this.metadataLimit){
 					break;
 				}
 			}

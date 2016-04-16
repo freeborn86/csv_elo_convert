@@ -8,15 +8,18 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class CsvReader {
-	private char delimiter;
 	private String csvInputFilePath;
+	private char delimiter;
+	private boolean hasHeader;
 	private ArrayList<ArrayList<String>> headerData;
 
 	private ArrayList<ArrayList<String>> clientData;
 
-	public CsvReader() {
-		this.delimiter = CsvImportDefaultSettings.delimiter;
-		this.csvInputFilePath = CsvImportDefaultSettings.folderPath + "\\" + CsvImportDefaultSettings.csvInputFile;
+	public CsvReader() throws IOException {
+		CsvImportDefaultSettings csvst = new CsvImportDefaultSettings();
+		this.delimiter = csvst.delimiter;
+		this.csvInputFilePath = csvst.folderPath + "\\" + csvst.csvInputFile;
+		this.hasHeader = csvst.hasHeader;
 	}
 
 	public ArrayList<ArrayList<String>> readCsvToCollection() {
@@ -26,7 +29,7 @@ public class CsvReader {
 			br = new BufferedReader(new InputStreamReader(new FileInputStream(this.csvInputFilePath)));
 			String line = null;
 			//If the first line is header
-			if (CsvImportDefaultSettings.hasHeader = true){
+			if (this.hasHeader == true){
 				if ((line = br.readLine()) != null){
 					String[] columns = line.split(String.valueOf(delimiter));
 					ArrayList<String> headerData = new ArrayList<String>();

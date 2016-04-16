@@ -5,67 +5,58 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 public class CsvImportDefaultSettings {
 
-	static {
-		final String csvFolderPath = "csv";
-		final String delimiterConfigFile = "csv.ini";
+	static final String configFile = "csv.ini";
 
-		try {
-			readSettings(csvFolderPath, delimiterConfigFile);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	char delimiter;
+	String csvInputFile;
+	String folderPath;
+	boolean hasHeader;
+	
+	public CsvImportDefaultSettings() throws IOException {
+		readSettings();
 	}
-
-	static char delimiter;
-	static String csvInputFile = "input.csv";
-	static String folderPath;
-	static boolean hasHeader;
-
-	public static void readSettings(String csvFolderPath, String delimiterConfigFile) throws IOException {
-		folderPath = csvFolderPath;
+	
+	public void readSettings() throws IOException {
 		delimiter = ',';
-		Files.walk(Paths.get(folderPath)).forEach(filePath -> {
-			if (Files.isRegularFile(filePath) && filePath.endsWith(delimiterConfigFile)) {
-				BufferedReader br = null;
-				try {
-					br = new BufferedReader(
-							new InputStreamReader(new FileInputStream(folderPath + "\\" + delimiterConfigFile)));
-					String line = null;
-					while ((line = br.readLine()) != null) {
-						if (line.startsWith("delimiter=")){
-							delimiter = line.charAt(line.length()-1);
-						}
-						if(line.startsWith("header=")){
-							if (line.substring(line.length()-4, line.length()).equals("true")){
-								hasHeader = true;
-							}
-							else{
-								hasHeader = false;
-							}
-						}
-						
-					}
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-					return;
-				} finally {
-					try {
-						br.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-						return;
+		BufferedReader br = null;
+		try {
+			br = new BufferedReader(new InputStreamReader(new FileInputStream(configFile)));
+			String line = null;
+			while ((line = br.readLine()) != null) {
+				if (line.startsWith("folder=")) {
+					this.folderPath = line.substring(line.indexOf("=") + 1, line.length());
+				}
+				if (line.startsWith("file=")) {
+					this.csvInputFile = line.substring(line.indexOf("=") + 1, line.length());
+				}
+				if (line.startsWith("delimiter=")) {
+					this.delimiter = line.charAt(line.length() - 1);
+				}
+				if (line.startsWith("header=")) {
+					if (line.substring(line.length() - 4, line.length()).equals("true")) {
+						this.hasHeader = true;
+					} else {
+						this.hasHeader = false;
 					}
 				}
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return;
+		} finally {
+			try {
+				br.close();
+			} catch (IOException e) {
+				e.printStackTrace();
 				return;
 			}
-		});
+		}
+		return;
 
 	}
 }

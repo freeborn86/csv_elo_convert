@@ -14,7 +14,7 @@ public class EloConversionDefaultSettings {
 	String eloGeneratedExportPath;
 	int metadataLimit;
 
-	public EloConversionDefaultSettings() throws IOException{
+	public EloConversionDefaultSettings() throws IOException {
 		readSettings();
 	}
 

@@ -28,9 +28,9 @@ public class CsvReader {
 		try {
 			br = new BufferedReader(new InputStreamReader(new FileInputStream(this.csvInputFilePath)));
 			String line = null;
-			//If the first line is header
-			if (this.hasHeader == true){
-				if ((line = br.readLine()) != null){
+			// If the first line is header
+			if (this.hasHeader == true) {
+				if ((line = br.readLine()) != null) {
 					String[] columns = line.split(String.valueOf(delimiter));
 					ArrayList<String> headerData = new ArrayList<String>();
 					for (String c : columns) {
@@ -62,8 +62,8 @@ public class CsvReader {
 		}
 		return clientData;
 	}
-	
-	public ArrayList<ArrayList<String>> getLastHeaderData(){
+
+	public ArrayList<ArrayList<String>> getLastHeaderData() {
 		return this.headerData;
 	}
 

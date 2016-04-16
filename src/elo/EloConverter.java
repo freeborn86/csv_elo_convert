@@ -15,11 +15,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 
-import csv.CsvImportDefaultSettings;
 import csv.CsvReader;
 
 public class EloConverter {
-	
+
 	private int lengthIdPadded;
 	private int metadataLimit;
 	private String eloSourceExportPath;
@@ -56,7 +55,6 @@ public class EloConverter {
 		this.hexIdUpComigRecord = -1L;
 		this.clientData = new ArrayList<ArrayList<String>>();
 	}
-
 
 	public String toString() {
 		String ret = "";
@@ -132,7 +130,8 @@ public class EloConverter {
 				// System.out.println(filePath.toString());
 				BufferedReader br = null;
 				try {
-					br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath.toString()), "UnicodeLittle"));
+					br = new BufferedReader(
+							new InputStreamReader(new FileInputStream(filePath.toString()), "UnicodeLittle"));
 					String line = null;
 					boolean rootRecordobtained = false;
 					boolean mask1Enctountered = false;
@@ -189,7 +188,8 @@ public class EloConverter {
 					&& filePath.endsWith(convertLongToHexUpperString(hexIdRootRecord) + ".ESW")) {
 				BufferedReader br = null;
 				try {
-					br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath.toString()), "UnicodeLittle"));
+					br = new BufferedReader(
+							new InputStreamReader(new FileInputStream(filePath.toString()), "UnicodeLittle"));
 					String line = null;
 					boolean subitemsReached = false;
 					numberOfSubItems = 0;
@@ -335,7 +335,6 @@ public class EloConverter {
 	}
 
 	private String generateRecordFile(ArrayList<String> clientRecord) throws IOException {
-		
 
 		// Setting the ID for the upcoming record to be generated
 		if (this.hexIdUpComigRecord == -1L) {
@@ -347,8 +346,8 @@ public class EloConverter {
 		String recordFilename = this.currentDestinationDirectory + "\\"
 				+ convertLongToHexUpperString(this.hexIdRootRecord) + "\\"
 				+ convertLongToHexUpperString(hexIdUpComigRecord) + ".ESW";
-		
-		//replacing double quotes in metadata collection
+
+		// replacing double quotes in metadata collection
 		removeQuotesFromMetadataFieldKeyNames(metaDataFields);
 
 		// Creating the Output stream writer and writing the file
@@ -360,12 +359,12 @@ public class EloConverter {
 		int keynum = 1;
 		for (MetaDataField mdf : metaDataFields) {
 
-
-			//TODO GET METADATA FROM LAST RECORD?
-			// TODO GET GENERTED METADATA LIMIT FROM RECORDS instead of static number?
-			// current solution: replacing double quotes with singles in names
-			if (this.metadataLimit > 0){
-				if (keynum > this.metadataLimit){
+			// TODO GET METADATA FROM LAST RECORD?
+			// TODO GET GENERTED METADATA LIMIT FROM RECORDS instead of static
+			// number?
+			// TODO solve the quoted key name mystery, currently being replaced
+			if (this.metadataLimit > 0) {
+				if (keynum > this.metadataLimit) {
 					break;
 				}
 			}
@@ -410,12 +409,12 @@ public class EloConverter {
 	private Long convertToLongNumber(String hexString) {
 		return Long.decode("0x" + hexString);
 	}
-	
-	private void removeQuotesFromMetadataFieldKeyNames(ArrayList<MetaDataField> mdf){
-		for (MetaDataField m : mdf){
+
+	private void removeQuotesFromMetadataFieldKeyNames(ArrayList<MetaDataField> mdf) {
+		for (MetaDataField m : mdf) {
 			m.name = m.name.replace("\"", "");
 		}
-		
+
 	}
 
 }

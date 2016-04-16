@@ -1,5 +1,6 @@
 package elo;
 
+import java.awt.image.ReplicateScaleFilter;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -346,6 +347,9 @@ public class EloConverter {
 		String recordFilename = this.currentDestinationDirectory + "\\"
 				+ convertLongToHexUpperString(this.hexIdRootRecord) + "\\"
 				+ convertLongToHexUpperString(hexIdUpComigRecord) + ".ESW";
+		
+		//replacing double quotes in metadata collection
+		removeQuotesFromMetadataFieldKeyNames(metaDataFields);
 
 		// Creating the Output stream writer and writing the file
 		OutputStreamWriter recordWriter = null;
@@ -355,11 +359,14 @@ public class EloConverter {
 		Iterator<String> i = clientRecord.iterator();
 		int keynum = 1;
 		for (MetaDataField mdf : metaDataFields) {
-			// TODO GET GENERTED METADATA LIMIT FROM RECORDS!
-			//TODO GET METADATA FROM LAST RECORD
-			if (keynum > 30){
-				break;
-			}
+
+
+			//TODO GET METADATA FROM LAST RECORD?
+			// TODO GET GENERTED METADATA LIMIT FROM RECORDS instead of static number?
+			// current solution: replacing double quotes with singles in names
+//			if (keynum > 30){
+//				break;
+//			}
 			if (i.hasNext()) {
 				mdf.setText(i.next());
 				toWrite += mdf.toString(keynum);
@@ -400,6 +407,13 @@ public class EloConverter {
 
 	private Long convertToLongNumber(String hexString) {
 		return Long.decode("0x" + hexString);
+	}
+	
+	private void removeQuotesFromMetadataFieldKeyNames(ArrayList<MetaDataField> mdf){
+		for (MetaDataField m : mdf){
+			m.name = m.name.replace("\"", "");
+		}
+		
 	}
 
 }

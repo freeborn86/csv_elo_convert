@@ -12,7 +12,7 @@ public class CsvImportDefaultSettings {
 
 	static {
 		final String csvFolderPath = "csv";
-		final String delimiterConfigFile = "delimiter.txt";
+		final String delimiterConfigFile = "csv.ini";
 
 		try {
 			readSettings(csvFolderPath, delimiterConfigFile);
@@ -21,13 +21,14 @@ public class CsvImportDefaultSettings {
 		}
 	}
 
-	public static String delimiter;
-	public static String csvInputFile = "input.csv";
-	public static String folderPath;
+	static char delimiter;
+	static String csvInputFile = "input.csv";
+	static String folderPath;
+	static boolean hasHeader;
 
 	public static void readSettings(String csvFolderPath, String delimiterConfigFile) throws IOException {
 		folderPath = csvFolderPath;
-		delimiter = ",";
+		delimiter = ',';
 		Files.walk(Paths.get(folderPath)).forEach(filePath -> {
 			if (Files.isRegularFile(filePath) && filePath.endsWith(delimiterConfigFile)) {
 				BufferedReader br = null;
@@ -36,7 +37,18 @@ public class CsvImportDefaultSettings {
 							new InputStreamReader(new FileInputStream(folderPath + "\\" + delimiterConfigFile)));
 					String line = null;
 					while ((line = br.readLine()) != null) {
-						delimiter = line;
+						if (line.startsWith("delimiter=")){
+							delimiter = line.charAt(line.length()-1);
+						}
+						if(line.startsWith("header=")){
+							if (line.substring(line.length()-4, line.length()).equals("true")){
+								hasHeader = true;
+							}
+							else{
+								hasHeader = false;
+							}
+						}
+						
 					}
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();

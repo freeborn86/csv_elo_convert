@@ -363,9 +363,11 @@ public class EloConverter {
 			//TODO GET METADATA FROM LAST RECORD?
 			// TODO GET GENERTED METADATA LIMIT FROM RECORDS instead of static number?
 			// current solution: replacing double quotes with singles in names
-//			if (keynum > 30){
-//				break;
-//			}
+			if (DefaultConversionSettings.metadataLimit > 0){
+				if (keynum > DefaultConversionSettings.metadataLimit){
+					break;
+				}
+			}
 			if (i.hasNext()) {
 				mdf.setText(i.next());
 				toWrite += mdf.toString(keynum);

@@ -80,4 +80,18 @@ public class CsvReader {
 			System.out.println("client data is null");
 		}
 	}
+	
+	public void sortClientData() {
+		if (clientData != null) {
+			for (ArrayList<String> cdr : this.clientData) {
+				for (String att : cdr) {
+					System.out.print(att + " ");
+				}
+				System.out.print("\n");
+				;
+			}
+		} else {
+			System.out.println("client data is null");
+		}
+	}
 }

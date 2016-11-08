@@ -1,8 +1,8 @@
-# Elo Professional Import helper
+Elo Professional Import helper
 ================================
 This Java utility was used for converting from CSV test data to ELO Professional 9 Importable "Dataset"
 
-## Details
+Details
 ----------
 * The application needs an existing Export from ELO Professional consisting of at least 2 data records
 * The application needs a csv as defined in csv.ini file (header, delimiter, path)
